@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project</title>
+  <meta name="description" content="Free Bootstrap Theme by BootstrapMade.com">
+  <meta name="keywords" content="free website templates, free bootstrap themes, free template, free bootstrap, free website template">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='js/states_location.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/heatmap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/leaflet-heatmap.js') }}"></script>
+  <style>
+    #map { height: 700px;}
+  </style>
+  <script>
+    var api_host = "https://cancer-research-apiv1.herokuapp.com";
+    var columnNames = ["lat", "lng", "count"];
+    function onEachState(columnsResult)
+    {
+        var jsonData = {};
+        var i=0;
+        columnsResult.forEach(function(column)
+        {
+            var columnName = columnNames[i];
+            jsonData[columnName] = columnsResult[i];
+            i++;
+        });
+        return jsonData;
+    }
+
+    function getLatLong(st_code, statesData){
+      var latlong = new Array();
+      for (i in states_data) {
+          //console.log("find in " +states_data[i].state_name);
+          if(st_code == states_data[i].state_name){
+            latlong[0] = states_data[i].lat;
+            latlong[1] = states_data[i].lng;
+            break;
+          }
+        }
+        return latlong;
+    }
+  </script>
+
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway|Candal">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/stylenew.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <style>.top-buffer { margin-top:20px; }</style>
+  <!-- =======================================================
+    Theme Name: Medilab
+    Theme URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/
+    Author: BootstrapMade.com
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
+</head>
+
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60" >
+  <!--banner-->
+  <section id="banner" class="banner">
+    <div class="bg-color">
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="col-md-12">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+              </button>
+              <h1> Cancer Research </h1>
+              
+            </div>
+            <div class="collapse navbar-collapse navbar-right" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#banner">Home</a></li>
+                <li class=""><a href="#service">Lukemia</a></li>
+                <li class=""><a href="#about">Breast-Cancer</a></li>
+                <!--<li class=""><a href="#challenges">Challenges</a></li> -->
+                <li class=""><a href="#contact">About</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="container">
+        <div class="row">
+          <div class="banner-info">
+            <div class="banner-logo text-center">
+              <!-- <img src="img/logo.png" class="img-responsive"> -->
+            </div>
+            <div class="banner-text text-center">
+              <h1 class="white">Analysis of Cancer Trends in US</h1>
+              <p>Research into cancer to identify causes and develop strategies for prevention, diagnosis, treatment, and cure. Cancer research ranges from epidemiology, molecular bioscience to the performance of clinical trials to evaluate and compare applications of the various cancer treatments. <br>tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+            <div class="overlay-detail text-center">
+              <a href="#service"><i class="fa fa-angle-down"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ banner-->
+  <!--service-->
+  <section id="service" class="section-padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-sm-4">
+          <h2 class="head-title lg-line">Lukemia <br>Stats</h2>
+          <hr class="botm-line">
+          <p>A cancer of blood-forming tissues, hindering the body's ability to fight infection</p>
+          <p>Leukemia is cancer of blood-forming tissues, including bone marrow. Many types exist such as acute lymphoblastic leukemia, acute myeloid leukemia, and chronic lymphocytic leukemia.
+            Many patients with slow-growing types of leukemias don't have symptoms. Rapidly growing types of leukemia may cause symptoms that include fatigue, weight loss, frequent infections, and easy bleeding or bruising.
+            Treatment is highly variable. For slow-growing leukemias, treatment may include monitoring. For aggressive leukemias, treatment includes chemotherapy that's sometimes followed by radiation and stem-cell transplant.</p>
+        </div>
+        <div class="col-md-4 col-sm-4">
+          <div class="block center"> 
+            <div id="tableauViz"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-sm-6">
+          <div id="tableauViz4"></div>
+          <div id="tableauViz2"></div>
+        </div>
+        <div class="col-sm-6">
+            <div id="tableauViz3"></div>
+        </div>  
+      </div>
+      
+    </div>
+  </section>
+  <!--/ service-->
+ 
+  <!--about-->
+  <section id="about" class="section-padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-4 col-xs-12">
+          <div class="section-title">
+            <h2 class="head-title lg-line">Breast-Cancer <br>STATS</h2>
+            <hr class="botm-line">
+            <p class="sec-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..</p>
+            <a href="" style="color: #0cb8b6; padding-top:10px;">Know more..</a>
+          </div>
+        </div>
+        <div class="col-md-9 col-sm-8 col-xs-12">
+          <div style="visibility: visible;" class="col-sm-9 more-features-box">
+            <div class="more-features-box-text">
+              <div class="more-features-box-text-icon"> <i class="fa fa-angle-right" aria-hidden="true"></i> </div>
+              <div class="more-features-box-text-description">
+                <h3>Breast cancer is the most common cancer in women both in the developed and less developed world. In 2012, it represented about 12 percent of all new cancer cases and 25 percent of all cancers in women.</h3>
+                <p>This is for Further Analysis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ about-->
+
+  <!--challenges-->
+  <section id="challenges" class="section-padding">
+ 
+  </section>
+  <!--/ challenges-->
+
+  <!--Heatmap-->
+  <section class="section-padding">
+    <div class="container">
+      <h2 class="head-title lg-line">Statewise Spending for Cancer in US </h2>
+    <div id="map"></div>
+    </div>
+  </section>
+ <!--/ Heatmap-->
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+  <script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+  <script src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+  <script>
+    function initializeViz() {
+  // JS object that points at empty div in the html
+  var placeholderDiv = document.getElementById("tableauViz");
+  var placeholderDiv2 = document.getElementById("tableauViz2");
+  var placeholderDiv3 = document.getElementById("tableauViz3");
+  var placeholderDiv4 = document.getElementById("tableauViz4");
+  // URL of the viz to be embedded
+  var url = "https://public.tableau.com/views/PIECHART-CATEGORYDEATHS/Sheet1?:display_count=y&publish=yes&:origin=viz_share_link";
+  var url2 = "https://public.tableau.com/views/Age-DetectedMvsF/DiagnosisagesinMVsF?:display_count=y&publish=yes&:origin=viz_share_link";
+  var url3 = "https://public.tableau.com/views/Age-Detected/Sheet2?:display_count=y&:origin=viz_share_link";
+  var url4 = "https://public.tableau.com/views/PatientRegimenComposition/PatientRegimenComposition?:retry=yes&:display_count=y&publish=yes&:origin=viz_share_link";
+  // An object that contains options specifying how to embed the viz
+  var options = {
+    width: '600px',
+    height: '600px',
+    hideTabs: true,
+    hideToolbar: true,
+  };
+  var options3 = {
+    width: '400px',
+    height: '500px',
+    hideTabs: true,
+    hideToolbar: true,
+  };
+  viz = new tableau.Viz(placeholderDiv, url, options);
+  viz2 = new tableau.Viz(placeholderDiv2, url2,options);
+  viz3 = new tableau.Viz(placeholderDiv3, url3, options);
+  viz4 = new tableau.Viz(placeholderDiv4, url4, options);
+  }
+  </script>
+
+
+
+  <script>
+    //console.log(states_data);
+    
+      window.onload = function() {
+    
+    var api_url = api_host+'/api/stateVsSpend';
+    
+    var actualData = new Array();
+    var counter = 0;
+    
+    fetch(api_url) // Call the fetch function passing the url of the API as a parameter
+    .then((resp) => resp.json())
+      .then(function(data) {
+        //console.log(data);
+        for (st in data) {
+          var stcode = data[st].location;
+         // console.log("State --> "+ stcode);
+          var latlng = getLatLong(stcode, states_data);
+         // console.log("latlng --> "+ latlng);
+         if(latlng && latlng.length > 0 ){
+              var dataArray = new Array();
+              dataArray[0] = latlng[0];
+              dataArray[1] = latlng[1];
+              dataArray[2] = data[st].healthspend;
+    
+              var stdata = onEachState( dataArray );
+              actualData[ counter ] = stdata;
+             // console.log("stdata --> "+ JSON.stringify(actualData[counter]));
+    
+               counter++;
+           }
+        }
+        setHeatMap(actualData);
+    })
+    .catch(function(error) {
+      console.error(error);
+    });
+    }
+    function setHeatMap(actualData){
+  //  console.log("actualData --> " + JSON.stringify(actualData));
+    var testData = {
+              max: 8,
+              data : actualData
+            };
+        //console.log("test data --> " + JSON.stringify(testData));
+        var baseLayer = L.tileLayer(
+              'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                maxZoom: 5,
+                minZoom: 4
+              }
+            );
+    
+            var cfg = {
+              // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+              "radius": 2,
+              "maxOpacity": .8,
+              // scales the radius based on map zoom
+              "scaleRadius": true,
+              // if set to false the heatmap uses the global maximum for colorization
+              // if activated: uses the data maximum within the current map boundaries
+              //   (there will always be a red spot with useLocalExtremas true)
+              "useLocalExtrema": true,
+              // which field name in your data represents the latitude - default "lat"
+              latField: 'lat',
+              // which field name in your data represents the longitude - default "lng"
+              lngField: 'lng',
+              // which field name in your data represents the data value - default "value"
+              valueField: 'count'
+            };
+    
+    
+            var heatmapLayer = new HeatmapOverlay(cfg);
+    
+            var map = new L.Map('map', {
+              center: new L.LatLng(34, -95),
+              zoom: 4,
+              layers: [baseLayer, heatmapLayer]
+            });
+    
+           heatmapLayer.setData(testData);
+    
+            // make accessible for debugging
+            layer = heatmapLayer;
+            }
+
+            initializeViz();
+  </script>
+
+ <!--footer-->
+  <footer id="footer">
+    <div class="footer-line">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            © UT Texas. All Rights Reserved
+            <div class="credits">
+              <!--
+                All the links in the footer should remain intact.
+                You can delete the links only if you purchased the pro version.
+                Licensing information: https://bootstrapmade.com/license/
+                Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Medilab
+              -->
+              Designed by <a href="https://bootstrapmade.com/">BootstrapMade.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--/ footer-->
+</body>
+
+</html>
